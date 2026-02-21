@@ -26,16 +26,15 @@ services:
   web:
     build: .
     container_name: scheduler_web
-    restart: always
-    env_file:
-      - .env
+    command: /app/entrypoint.sh
     depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    expose:
-      - "8000"
+      - db
+      - redis
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   nginx:
     image: nginx:1.27-alpine

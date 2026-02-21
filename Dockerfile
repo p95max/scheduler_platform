@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     curl \
     git \
+    netcat-openbsd \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}"
@@ -22,4 +24,7 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]
