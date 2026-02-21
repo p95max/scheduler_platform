@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Manager bookings{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">Bookings for my resources</h1>
+  <div class="list-group">
+    {% for b in bookings %}
+      <div class="list-group-item">
+        <div class="d-flex justify-content-between">
+          <div>
+            <div class="fw-semibold">{{ b.resource.name }}</div>
+            <div class="text-muted">{{ b.user.email }} • {{ b.starts_at_utc }}</div>
+          </div>
+          <div>
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'scheduling:booking_cancel' booking_id=b.id %}">Cancel</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="alert alert-info">No bookings.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

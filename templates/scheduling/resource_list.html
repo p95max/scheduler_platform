@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Resources{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">Resources</h1>
+  <div class="list-group">
+    {% for r in resources %}
+      <a class="list-group-item list-group-item-action" href="{% url 'scheduling:resource_detail' resource_id=r.id %}">
+        <div class="d-flex w-100 justify-content-between">
+          <h2 class="h6 mb-1">{{ r.name }}</h2>
+        </div>
+        <p class="mb-1 text-muted">{{ r.description|default:"" }}</p>
+      </a>
+    {% empty %}
+      <div class="alert alert-info">No active resources.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

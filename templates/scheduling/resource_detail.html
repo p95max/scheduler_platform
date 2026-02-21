@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ resource.name }}{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-2">{{ resource.name }}</h1>
+  <p class="text-muted">{{ resource.description|default:"" }}</p>
+
+  <div class="alert alert-warning">
+    Limit: max 5 bookings per day per user (Europe/Berlin). Cancel is unlimited.
+  </div>
+
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'scheduling:booking_create' resource_id=resource.id %}" class="card p-3">
+      {% csrf_token %}
+      <input type="hidden" name="resource_id" value="{{ resource.id }}">
+      <div class="mb-3">
+        <label class="form-label">Available slots</label>
+        <select class="form-select" id="slot-select" required>
+          <option value="" selected disabled>Select a slot</option>
+          {% for s in slots %}
+            <option value="{{ s.starts_utc|date:'c' }}">
+              {{ s.starts_local|date:"Y-m-d H:i" }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <input type="hidden" name="starts_at_utc" id="starts-at-utc">
+      <button class="btn btn-primary" type="submit">Book</button>
+    </form>
+
+    <script>
+      const select = document.getElementById('slot-select');
+      const hidden = document.getElementById('starts-at-utc');
+      select.addEventListener('change', () => { hidden.value = select.value; });
+    </script>
+  {% else %}
+    <div class="alert alert-info">
+      Please <a href="{% url 'account_login' %}">login</a> to book.
+    </div>
+  {% endif %}
+{% endblock %}
