@@ -52,6 +52,11 @@ if DEBUG:
 
 USE_X_FORWARDED_HOST = True
 
+LOGIN_REDIRECT_URL = "/booking/"
+LOGOUT_REDIRECT_URL = "/booking/"
+
+ACCOUNT_LOGOUT_REDIRECT_URL = "/booking/"
+
 
 """
 Applications
