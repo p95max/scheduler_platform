@@ -44,6 +44,11 @@ Core security
 SECRET_KEY = _env("DJANGO_SECRET_KEY", "dev-only-change-me")
 DEBUG = _env_bool("DJANGO_DEBUG", "1")
 ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in _env("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(",")
+    if origin.strip()
+]
 
 
 """

@@ -35,6 +35,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - static_volume:/app/staticfiles
 
   nginx:
     image: nginx:1.27-alpine
@@ -44,7 +46,9 @@ services:
       - "8080:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/staticfiles
 
 volumes:
   postgres_data:
   redis_data:
+  static_volume:
