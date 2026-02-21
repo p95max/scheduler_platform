@@ -44,11 +44,13 @@ Core security
 SECRET_KEY = _env("DJANGO_SECRET_KEY", "dev-only-change-me")
 DEBUG = _env_bool("DJANGO_DEBUG", "1")
 ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in _env("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(",")
-    if origin.strip()
-]
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+    ]
+
+USE_X_FORWARDED_HOST = True
 
 
 """
@@ -183,13 +185,19 @@ ACCOUNT_EMAIL_VERIFICATION = _env("ACCOUNT_EMAIL_VERIFICATION", "none")
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": _env("GOOGLE_CLIENT_ID", ""),
-            "secret": _env("GOOGLE_CLIENT_SECRET", ""),
+            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+            "secret": os.getenv("GOOGLE_CLIENT_SECRET"),
             "key": "",
-        }
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
     }
 }
-
 
 """
 Internationalization / Time
