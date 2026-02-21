@@ -1,0 +1,87 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# Poetry
+.poetry/
+poetry.toml
+
+# =========================
+# Django
+# =========================
+*.log
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# If using dotenv
+.env
+.env.*
+!.env.example
+
+# =========================
+# PyCharm / JetBrains
+# =========================
+.idea/
+*.iml
+
+# =========================
+# VS Code (если вдруг)
+# =========================
+.vscode/
+
+# =========================
+# Docker
+# =========================
+*.pid
+*.seed
+*.pid.lock
+docker-compose.override.yml
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Coverage / tests
+# =========================
+htmlcov/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+
+# =========================
+# mypy
+# =========================
+.mypy_cache/
+.dmypy.json
+
+# =========================
+# Redis dump
+# =========================
+dump.rdb

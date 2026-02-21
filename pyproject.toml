@@ -1,0 +1,26 @@
+[project]
+name = "scheduler-platform"
+version = "0.1.0"
+description = "Scheduler Platform: a universal platform for booking appointments with resources (doctors, lawyers, coaches, etc.), suitable for deployment as a standalone service and integration via API."
+authors = [
+    {name = "maxx",email = "m.petrykin@gmx.de"}
+]
+readme = "README.md"
+requires-python = "^3.14"
+dependencies = [
+    "django (==6.0.2)",
+    "redis (==5.2.1)",
+    "django-redis (==5.4.0)",
+    "django-crispy-forms (==2.3)",
+    "crispy-bootstrap5 (==2024.10)",
+    "gunicorn (==23.0.0)",
+    "ics (==0.7.2)",
+    "python-dateutil (==2.9.0.post0)",
+    "psycopg[binary] (==3.3.3)",
+    "django-allauth (==65.14.3)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
