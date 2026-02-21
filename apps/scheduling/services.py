@@ -10,7 +10,6 @@ from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-from ics import Calendar, Event
 
 from .models import (
     AvailabilityException,
@@ -147,26 +146,51 @@ def cancel_booking(*, booking: Booking, acting_user: User) -> None:
     booking.delete()
 
 
-def build_ics_bytes(booking: Booking, request_host: str | None) -> bytes:
-    tz = get_tz()
-    cal = Calendar()
-    event = Event()
-    event.name = f"Appointment: {booking.resource.name}"
-    event.begin = booking.starts_at_utc
-    event.end = booking.ends_at_utc
-    event.description = f"Resource: {booking.resource.name}"
+def _ics_dt(dt_utc: datetime) -> str:
+    if timezone.is_naive(dt_utc):
+        dt_utc = dt_utc.replace(tzinfo=timezone.utc)
+    dt_utc = dt_utc.astimezone(timezone.utc)
+    return dt_utc.strftime("%Y%m%dT%H%M%SZ")
+
+
+def _ics_escape(value: str) -> str:
+    return (
+        value.replace("\\", "\\\\")
+        .replace(";", "\\;")
+        .replace(",", "\\,")
+        .replace("\n", "\\n")
+    )
+
+def build_ics_bytes(booking, request_host: str | None) -> bytes:
+    uid = f"{booking.id}@scheduler-platform"
+    dtstamp = _ics_dt(timezone.now())
+    dtstart = _ics_dt(booking.starts_at_utc)
+    dtend = _ics_dt(booking.ends_at_utc)
+
+    summary = _ics_escape(f"Appointment: {booking.resource.name}")
+    description = _ics_escape(f"Resource: {booking.resource.name}")
+    url_line = ""
     if request_host:
-        event.url = f"https://{request_host}/booking/"
-    event.categories = ["Scheduler Platform"]
-    event.created = timezone.now()
-    event.last_modified = timezone.now()
-    event.uid = f"{booking.id}@scheduler-platform"
-    event.transparent = False
-    event.begin = booking.starts_at_utc
-    event.end = booking.ends_at_utc
-    event.alarms = []
-    cal.events.add(event)
-    return str(cal).encode("utf-8")
+        url_line = f"URL:https://{_ics_escape(request_host)}/booking/\r\n"
+
+    ics = (
+        "BEGIN:VCALENDAR\r\n"
+        "VERSION:2.0\r\n"
+        "PRODID:-//Scheduler Platform//EN\r\n"
+        "CALSCALE:GREGORIAN\r\n"
+        "METHOD:PUBLISH\r\n"
+        "BEGIN:VEVENT\r\n"
+        f"UID:{uid}\r\n"
+        f"DTSTAMP:{dtstamp}\r\n"
+        f"DTSTART:{dtstart}\r\n"
+        f"DTEND:{dtend}\r\n"
+        f"SUMMARY:{summary}\r\n"
+        f"DESCRIPTION:{description}\r\n"
+        f"{url_line}"
+        "END:VEVENT\r\n"
+        "END:VCALENDAR\r\n"
+    )
+    return ics.encode("utf-8")
 
 
 def send_booking_email(*, booking: Booking, request_host: str | None) -> None:

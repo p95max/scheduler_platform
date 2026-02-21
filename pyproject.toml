@@ -14,11 +14,12 @@ dependencies = [
     "django-crispy-forms (==2.3)",
     "crispy-bootstrap5 (==2024.10)",
     "gunicorn (==23.0.0)",
-    "ics (==0.7.2)",
     "python-dateutil (==2.9.0.post0)",
     "psycopg[binary] (==3.3.3)",
     "django-allauth (==65.14.3)",
-    "pyjwt (>=2.11.0,<3.0.0)"
+    "pyjwt (>=2.11.0,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "cryptography (>=46.0.5,<47.0.0)"
 ]
 
 
