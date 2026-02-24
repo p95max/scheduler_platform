@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import date, datetime, time, timedelta
+from datetime import timezone as dt_timezone
 from zoneinfo import ZoneInfo
 
 from django.conf import settings
@@ -125,7 +126,7 @@ def daterange(start_date: date, days: int) -> list[date]:
 
 
 def to_utc(dt_local: datetime) -> datetime:
-    return dt_local.astimezone(timezone.utc)
+    return dt_local.astimezone(dt_timezone.utc)
 
 
 def slot_starts_local(day_local: date, start_t: time, end_t: time) -> list[datetime]:
